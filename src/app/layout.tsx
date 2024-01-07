@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Reader Pal",
+  title: "ReaderPal",
   description:
     "Chat with your documents in minutes. Ask questions, take notes, and more.",
 };
