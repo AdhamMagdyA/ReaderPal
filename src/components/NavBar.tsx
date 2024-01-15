@@ -2,6 +2,10 @@ import React from "react";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
+import {
+  LoginLink,
+  RegisterLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 
 const NavBar = () => {
   return (
@@ -23,6 +27,21 @@ const NavBar = () => {
               >
                 pricing
               </Link>
+              <LoginLink
+                className={buttonVariants({
+                  variant: "outline",
+                  size: "sm",
+                })}
+              >
+                Sign in
+              </LoginLink>
+              <RegisterLink
+                className={buttonVariants({
+                  size: "sm",
+                })}
+              >
+                Get started
+              </RegisterLink>
             </>
           </div>
         </div>
