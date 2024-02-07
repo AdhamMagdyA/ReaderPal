@@ -2,20 +2,51 @@
 import React from "react";
 import UploadButton from "./UploadButton";
 import { trpc } from "@/app/_trpc/client";
-import { Ghost, MessageSquare, Plus, Trash, XOctagon } from "lucide-react";
+import {
+  Ghost,
+  Loader2,
+  MessageSquare,
+  Plus,
+  Trash,
+  XOctagon,
+} from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Button } from "./ui/button";
 
 const Dashboard = () => {
+  const [deletingFile, setDeletingFile] = React.useState<string | null>(null);
+  const utils = trpc.useContext();
   const {
     data: files,
     isLoading,
     isError,
     error,
   } = trpc.getUserFiles.useQuery();
+  const { mutate: deleteFile } = trpc.deleteFile.useMutation({
+    onSuccess: () => {
+      utils.getUserFiles.invalidate();
+    },
+    onMutate: ({ id }) => {
+      setDeletingFile(id);
+    },
+    onSettled: () => {
+      setDeletingFile(null);
+    },
+  });
 
   return (
     <main className="mx-auto max-w-7xl md:p-10">
@@ -79,9 +110,45 @@ const Dashboard = () => {
                       <MessageSquare className="h-4 w-4" />
                       13 messages
                     </div>
-                    <Button size="sm" className="w-full" variant="destructive">
-                      <Trash className="h-4 w-4" />
-                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger className="w-full">
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          variant="destructive"
+                        >
+                          {deletingFile === file.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your PDF and your messages with it.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            color="red"
+                            style={{
+                              backgroundColor: "hsl(0, 86%, 97%)", // light theme destructive background
+                              color: "hsl(0, 74%, 42%)", // light theme destructive foreground
+                            }}
+                            onClick={() => deleteFile({ id: file.id })}
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </li>
               ))}
