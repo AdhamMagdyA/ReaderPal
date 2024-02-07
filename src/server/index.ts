@@ -1,5 +1,5 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { router, publicProcedure } from "./trpc";
+import { router, publicProcedure, authProcedure } from "./trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 
@@ -41,6 +41,28 @@ export const appRouter = router({
     }
 
     return { success: true };
+  }),
+  getUserFiles: authProcedure.query(async ({ ctx }) => {
+    const { userId } = ctx;
+    try {
+      const files = await db.file.findMany({
+        where: {
+          userId,
+        },
+      });
+      if (!files) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "No files found",
+        });
+      }
+      return files;
+    } catch (e) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Internal Server Error",
+      });
+    }
   }),
 });
 

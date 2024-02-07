@@ -38,6 +38,7 @@ const NavBar = () => {
               <RegisterLink
                 className={buttonVariants({
                   size: "sm",
+                  className: "bg-black text-white hover:bg-slate-600",
                 })}
               >
                 Get started

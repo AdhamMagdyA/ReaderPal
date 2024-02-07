@@ -10,19 +10,15 @@ const page = () => {
   const origin = searchParams.get("origin");
 
   // sync the user in kinde session to our db
-  const { data, isLoading } = trpc.authCallback.useQuery(undefined, {
-    retry: true,
-    retryDelay: 500,
-  });
+  const { data, isLoading } = trpc.authCallback.useQuery();
 
-  if (data?.success) {
-    router.push(origin || "/dashboard");
-  } else {
-    router.push("/login");
-  }
-
-  if (isLoading) {
-    return null;
+  if (!isLoading) {
+    if (data?.success) {
+      router.push(origin || "/dashboard");
+    } else {
+      // redirect to the kinde login page
+      router.push("api/auth/login");
+    }
   }
 
   return (
