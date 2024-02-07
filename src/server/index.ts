@@ -92,6 +92,23 @@ export const appRouter = router({
 
       return deletedFile;
     }),
+  getFile: authProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      const { userId } = ctx;
+      const file = await db.file.findUnique({
+        where: {
+          id,
+          userId,
+        },
+      });
+      return file;
+    }),
 });
 
 // Export type router type signature,
