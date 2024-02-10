@@ -4,7 +4,11 @@ import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "./ui/button";
 import Dropzone from "react-dropzone";
-import { Cloud, File } from "lucide-react";
+import { Cloud, File, Loader2 } from "lucide-react";
+import { useUploadThing } from "@/lib/uploadthing";
+import { toast } from "@/components/ui/use-toast";
+import { trpc } from "@/app/_trpc/client";
+import { useRouter } from "next/navigation";
 
 const UploadButton = () => {
   return (
@@ -25,14 +29,25 @@ const UploadFileZone = () => {
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const [progress, setProgress] = React.useState<number>(0);
 
+  const router = useRouter();
+  const { mutate: startPolligFile } = trpc.getFile.useMutation({
+    onSuccess: (file) => {
+      router.push(`/dashboard/${file.id}`);
+    },
+    retry: true,
+    retryDelay: 800,
+  });
+
+  const { startUpload } = useUploadThing("pdfUploader");
+
   const simulatedUploadProgress = () => {
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 90) {
+        if (prev >= 95) {
           clearInterval(interval);
           return prev;
         }
-        return prev + 10;
+        return prev + 5;
       });
     }, 500);
     return interval;
@@ -45,10 +60,30 @@ const UploadFileZone = () => {
         setIsUploading(true);
         const progressInterval = simulatedUploadProgress();
         //handle file upload/////////////////////
-        await new Promise((resolve) => setTimeout(resolve, 20000));
+        const res = await startUpload(acceptedFiles);
+        if (!res) {
+          toast({
+            title: "Something went wrong!",
+            description: "Please try again later.",
+            variant: "destructive",
+          });
+        }
+        const fileResponse = res![0];
+        console.log("view the file at", fileResponse.url);
+        const key = fileResponse.key;
+        if (!key) {
+          toast({
+            title: "Something went wrong!",
+            description: "Please try again later.",
+            variant: "destructive",
+          });
+        }
+
         /////////////////////////////////////////
         clearInterval(progressInterval);
         setProgress(100);
+
+        startPolligFile({ key });
       }}
     >
       {({ getRootProps, getInputProps, acceptedFiles }) => {
@@ -85,9 +120,16 @@ const UploadFileZone = () => {
                 {isUploading ? (
                   <div className="w-full mt-4 max-w-xs mx-auto">
                     <Progress
+                      indicatorColor={progress === 100 ? "bg-green-500" : ""}
                       value={progress}
                       className="h-1 w-full bg-zinc-200"
                     />
+                    {progress === 100 ? (
+                      <div className="flex gap-1 items-center justify-center text-sm text-zinc-700 text-center pt-2">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Redirecting...
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
               </label>

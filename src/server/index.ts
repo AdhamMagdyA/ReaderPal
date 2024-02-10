@@ -95,18 +95,22 @@ export const appRouter = router({
   getFile: authProcedure
     .input(
       z.object({
-        id: z.string(),
+        key: z.string(),
       })
     )
-    .query(async ({ ctx, input }) => {
-      const { id } = input;
+    .mutation(async ({ ctx, input }) => {
+      const { key } = input;
       const { userId } = ctx;
-      const file = await db.file.findUnique({
+
+      const file = await db.file.findFirst({
         where: {
-          id,
+          key,
           userId,
         },
       });
+
+      if (!file) throw new TRPCError({ code: "NOT_FOUND" });
+
       return file;
     }),
 });
