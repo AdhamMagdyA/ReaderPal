@@ -6,6 +6,9 @@ import NavBar from "@/components/NavBar";
 import Providers from "@/components/Providers";
 import { Toaster } from "@/components/ui/toaster";
 import "react-loading-skeleton/dist/skeleton.css";
+// for the react pdf viewer
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
