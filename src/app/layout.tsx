@@ -9,6 +9,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 // for the react pdf viewer
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+// for the simplebar
+import "simplebar-react/dist/simplebar.min.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
