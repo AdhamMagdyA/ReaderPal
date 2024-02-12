@@ -65,6 +65,20 @@ export const appRouter = router({
       });
     }
   }),
+  getFileStatus: authProcedure
+    .input(z.object({ fileId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const file = await db.file.findUnique({
+        where: {
+          id: input.fileId,
+          userId: ctx.userId,
+        },
+      });
+
+      if (!file) return { status: "PENDING" as const };
+
+      return { status: file.status };
+    }),
   deleteFile: authProcedure
     .input(
       z.object({

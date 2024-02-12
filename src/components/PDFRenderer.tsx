@@ -3,9 +3,11 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronUp,
+  Frown,
   Loader2,
   RotateCw,
   Search,
+  XCircle,
 } from "lucide-react";
 import React from "react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -167,6 +169,12 @@ const PDFRenderer = ({ url }: { url: string }) => {
               }}
               file={url}
               className={"max-h-full"}
+              error={
+                <div className="my-24 flex flex-col justify-center items-center">
+                  <Frown className="h-6 w-6 text-red-500" />
+                  Oops, Something went wrong!
+                </div>
+              }
             >
               <Page
                 loading={
