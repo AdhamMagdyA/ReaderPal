@@ -63,12 +63,11 @@ export const ourFileRouter = {
             },
           });
         }
-        console.log("Embeddings: ", embeddings);
+
         await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
           pineconeIndex,
           namespace: createdFile.id,
         });
-        console.log("Indexed successfully");
         // file is uploaded and indexed successfully
         await db.file.update({
           where: { id: createdFile.id },
