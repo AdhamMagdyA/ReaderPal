@@ -12,7 +12,7 @@ import { openai } from "@/lib/openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 
 export const POST = async (req: NextRequest) => {
-  const body = req.json();
+  const body = await req.json();
 
   const { getUser } = getKindeServerSession();
   const user = await getUser();
