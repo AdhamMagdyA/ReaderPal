@@ -33,6 +33,7 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
                     e.preventDefault();
                     addMessage();
                     textareaRef.current?.focus();
+                    textareaRef.current!.value = "";
                   }
                 }}
               />
@@ -44,6 +45,7 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
                   e.preventDefault();
                   addMessage();
                   textareaRef.current?.focus();
+                  textareaRef.current!.value = "";
                 }}
               >
                 <Send className="h-4 w-4" />
