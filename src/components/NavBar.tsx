@@ -6,6 +6,7 @@ import {
   LoginLink,
   RegisterLink,
 } from "@kinde-oss/kinde-auth-nextjs/components";
+import { Logo } from "./Logo";
 
 const NavBar = () => {
   return (
@@ -13,7 +14,10 @@ const NavBar = () => {
       <MaxWidthWrapper>
         <div className="flex h-14 items-center justify-between border-b border-zinc-200">
           <Link href="/" className="flex z-40 font-semibold">
-            <span>ReaderPal</span>
+            <div className="flex justify-center items-center">
+              <Logo />
+              <span>ReaderPal</span>
+            </div>
           </Link>
           {/* TODO: create a mobile navbar */}
           <div className="hidden items-center space-x-4 sm:flex">
