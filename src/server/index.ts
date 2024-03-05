@@ -238,6 +238,17 @@ export const appRouter = router({
         nextCursor,
       };
     }),
+  getFileMessagesCount: authProcedure
+    .input(z.object({ fileId: z.string() }))
+    .query(async ({ input }) => {
+      const { fileId } = input;
+      const count = await db.message.count({
+        where: {
+          fileId,
+        },
+      });
+      return count;
+    }),
 });
 
 // Export type router type signature,
