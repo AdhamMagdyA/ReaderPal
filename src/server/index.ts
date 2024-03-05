@@ -7,6 +7,8 @@ import { INIFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { absoluteUrl } from "@/lib/utils";
 import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
 import { PLANS } from "@/config/stripe";
+import { UTApi } from "uploadthing/server";
+import { pinecone } from "@/lib/pinecone";
 
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
@@ -145,13 +147,26 @@ export const appRouter = router({
 
       if (!file) throw new TRPCError({ code: "NOT_FOUND" });
 
-      const deletedFile = await db.file.delete({
-        where: {
-          id,
-        },
-      });
+      try {
+        // delete the file from the uploadthing storage
+        const fileKey = file.key;
+        const utapi = new UTApi();
+        await utapi.deleteFiles([fileKey]);
+        // delete the file from the pinecone index
+        const index = pinecone.index("reader-pal");
+        const fileId = file.id;
+        await index.namespace(fileId).deleteAll();
+        // delete the file from the database
+        const deletedFile = await db.file.delete({
+          where: {
+            id,
+          },
+        });
 
-      return deletedFile;
+        return deletedFile;
+      } catch (e) {
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      }
     }),
   getFile: authProcedure
     .input(
