@@ -19,7 +19,7 @@ export default function Home() {
         </h1>
         <p className="mt-5 max-w-prose">
           ReaderPal lets you have conversations with any PDF document. Just
-          upload your document and you're ready to go!
+          upload your document and you&apos;re ready to go!
         </p>
         <Link
           href="/dashboard"

@@ -68,6 +68,7 @@ const Dashboard = () => {
               )
               .map((file) => (
                 <FileCard
+                  key={file.id}
                   file={file}
                   deleteFile={deleteFile}
                   deletingFile={deletingFile}
