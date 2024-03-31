@@ -249,6 +249,9 @@ export const appRouter = router({
       });
       return count;
     }),
+  getUserSubscriptionPlan: authProcedure.query(()=>{
+    return getUserSubscriptionPlan();
+  })
 });
 
 // Export type router type signature,

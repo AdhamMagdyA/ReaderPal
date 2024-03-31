@@ -7,8 +7,13 @@ import {
   RegisterLink,
 } from "@kinde-oss/kinde-auth-nextjs/components";
 import { Logo } from "./Logo";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import UserAccountNav from "./UserAccountNav";
 
-const NavBar = () => {
+const NavBar = async () => {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 bg-white/75 backdrop-blur-lg transition all">
       <MaxWidthWrapper>
@@ -21,33 +26,65 @@ const NavBar = () => {
           </Link>
           {/* TODO: create a mobile navbar */}
           <div className="hidden items-center space-x-4 sm:flex">
-            <>
-              <Link
-                href="/pricing"
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "sm",
-                })}
-              >
-                pricing
-              </Link>
-              <LoginLink
-                className={buttonVariants({
-                  variant: "outline",
-                  size: "sm",
-                })}
-              >
-                Sign in
-              </LoginLink>
-              <RegisterLink
-                className={buttonVariants({
-                  size: "sm",
-                  className: "bg-black text-white hover:bg-slate-600",
-                })}
-              >
-                Get started
-              </RegisterLink>
-            </>
+            {!user ? (
+              <>
+                <Link
+                  href="/pricing"
+                  className={buttonVariants({
+                    variant: "ghost",
+                    size: "sm",
+                  })}
+                >
+                  pricing
+                </Link>
+                <LoginLink
+                  className={buttonVariants({
+                    variant: "outline",
+                    size: "sm",
+                  })}
+                >
+                  Sign in
+                </LoginLink>
+                <RegisterLink
+                  className={buttonVariants({
+                    size: "sm",
+                    className: "bg-black text-white hover:bg-slate-600",
+                  })}
+                >
+                  Get started
+                </RegisterLink>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/pricing"
+                  className={buttonVariants({
+                    variant: "ghost",
+                    size: "sm",
+                  })}
+                >
+                  pricing
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className={buttonVariants({
+                    variant: "outline",
+                    size: "sm",
+                  })}
+                >
+                  Dashboard
+                </Link>
+                <UserAccountNav
+                  email={user.email}
+                  imageUrl={user.picture}
+                  name={
+                    !user.given_name || !user.family_name
+                      ? `Your Account`
+                      : `${user.given_name} ${user.family_name}`
+                  }
+                />
+              </>
+            )}
           </div>
         </div>
       </MaxWidthWrapper>
