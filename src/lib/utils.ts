@@ -7,6 +7,6 @@ export function cn(...inputs: ClassValue[]) {
 
 export function absoluteUrl(path: string) {
   if (typeof window !== "undefined") return path;
-  if (process.env.VERCLE_URL) return `https://${process.env.VERCLE_URL}${path}`;
+  if (process.env.DEPLOYMENT_URL) return `https://${process.env.DEPLOYMENT_URL}${path}`;
   return `http://localhost:${process.env.PORT ?? 3000}${path}`;
 }
