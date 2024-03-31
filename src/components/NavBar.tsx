@@ -9,6 +9,7 @@ import {
 import { Logo } from "./Logo";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import UserAccountNav from "./UserAccountNav";
+import MobileNav from "./MobileNav";
 
 const NavBar = async () => {
   const { getUser } = getKindeServerSession();
@@ -24,7 +25,9 @@ const NavBar = async () => {
               <span>ReaderPal</span>
             </div>
           </Link>
-          {/* TODO: create a mobile navbar */}
+
+          <MobileNav user={user} />
+
           <div className="hidden items-center space-x-4 sm:flex">
             {!user ? (
               <>
