@@ -82,7 +82,7 @@ export const appRouter = router({
     });
     if (!dbUser) throw new TRPCError({ code: "UNAUTHORIZED" });
 
-    const billingUrl = "readerpal.vercel.app/dashboard/billing";
+    const billingUrl = "https://readerpal.vercel.app/dashboard/billing";
     const subscriptionPlan = await getUserSubscriptionPlan();
 
     if (subscriptionPlan.isSubscribed && dbUser.stripeCustomerId) {
