@@ -17,7 +17,28 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "ReaderPal",
   description:
-    "Chat with your documents in minutes. Ask questions, take notes, and more.",
+    "Chat with your documents in minutes. Ask questions, take notes, and improve your reading comprehension with ReaderPal.",
+  icons: "/favicon.ico",
+  openGraph: {
+    title: "ReaderPal",
+    description:
+      "Chat with your documents in minutes. Ask questions, take notes, and improve your reading comprehension with ReaderPal.",
+    images: [
+      {
+        url: "/og-image.png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ReaderPal",
+    description:
+      "Chat with your documents in minutes. Ask questions, take notes, and improve your reading comprehension with ReaderPal.",
+    images: ["/og-image.png"],
+    creator: "@AdhamMagdyA",
+  },
+  metadataBase: new URL("https://readerpal.vercel.app"),
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
