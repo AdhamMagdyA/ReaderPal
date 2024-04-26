@@ -38,7 +38,6 @@ export const metadata: Metadata = {
     creator: "@AdhamMagdyA",
   },
   metadataBase: new URL("https://readerpal.vercel.app"),
-  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
