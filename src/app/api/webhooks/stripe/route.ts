@@ -5,36 +5,37 @@ import type Stripe from "stripe";
 
 export async function POST(request: Request) {
   console.log("stripe webhook hit");
-  const body = await request.text();
+  const body = await request.json();
   console.log("body", body);
   const signature = request.headers.get("stripe-signature") || "";
   console.log("signature", signature);
 
   let event: Stripe.Event;
 
-  try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET || ""
-    );
-  } catch (err) {
-    console.log("caught error", err)
-    return new Response(
-      `Webhook Error: ${err instanceof Error ? err.message : "Unknown Error"}`,
-      { status: 400 }
-    );
-  }
+  // try {
+  //   event = stripe.webhooks.constructEvent(
+  //     body,
+  //     signature,
+  //     process.env.STRIPE_WEBHOOK_SECRET || ""
+  //   );
+  // } catch (err) {
+  //   console.log("caught error", err)
+  //   return new Response(
+  //     `Webhook Error: ${err instanceof Error ? err.message : "Unknown Error"}`,
+  //     { status: 400 }
+  //   );
+  // }
 
-  const session = event.data.object as Stripe.Checkout.Session;
+  const session = body.data.object as Stripe.Checkout.Session;
 
   if (!session?.metadata?.userId) {
     return new Response(null, {
+      statusText: "No user ID",
       status: 200,
     });
   }
 
-  if (event.type === "checkout.session.completed") {
+  if (body.type === "checkout.session.completed") {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     );
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
     });
   }
 
-  if (event.type === "invoice.payment_succeeded") {
+  if (body.type === "invoice.payment_succeeded") {
     // Retrieve the subscription details from Stripe.
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
