@@ -155,7 +155,8 @@ export const appRouter = router({
         // delete the file from the pinecone index
         const index = pinecone.index("reader-pal");
         const fileId = file.id;
-        await index.namespace(fileId).deleteAll();
+        const namespaceExists = index.namespace(fileId)
+        if (namespaceExists) await index.namespace(fileId).deleteAll();
         // delete the file from the database
         const deletedFile = await db.file.delete({
           where: {
