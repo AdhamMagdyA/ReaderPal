@@ -147,14 +147,24 @@ export const appRouter = router({
 
       if (!file) throw new TRPCError({ code: "NOT_FOUND" });
 
-      // delete the file from the uploadthing storage
-      const fileKey = file.key;
-      const utapi = new UTApi();
-      await utapi.deleteFiles([fileKey]);
-      // delete the file from the pinecone index
-      const index = pinecone.index("reader-pal");
-      const fileId = file.id;
-      await index.namespace(fileId).deleteAll();
+      try{
+        // delete the file from the uploadthing storage
+        const fileKey = file.key;
+        const utapi = new UTApi();
+        await utapi.deleteFiles([fileKey]);
+      }catch(e){
+        console.error(e);
+      }
+
+      try{
+        // delete the file from the pinecone index
+        const index = pinecone.index("reader-pal");
+        const fileId = file.id;
+        await index.namespace(fileId).deleteAll();
+      }catch(e){
+        console.error(e);
+      }
+
       try {
         // delete the file from the database
         const deletedFile = await db.file.delete({
@@ -162,7 +172,6 @@ export const appRouter = router({
             id,
           },
         });
-
         return deletedFile;
       } catch (e: any) {
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: e.message});
