@@ -13,6 +13,7 @@ import {
 import Skeleton from "react-loading-skeleton";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { FileCard } from "./FileCard";
+import { toast } from "./ui/use-toast";
 
 const Dashboard = () => {
   const [deletingFile, setDeletingFile] = React.useState<string | null>(null);
@@ -32,6 +33,13 @@ const Dashboard = () => {
     },
     onSettled: () => {
       setDeletingFile(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Something went wrong",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 

@@ -164,8 +164,8 @@ export const appRouter = router({
         });
 
         return deletedFile;
-      } catch (e) {
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+      } catch (e: any) {
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: e.message});
       }
     }),
   getFile: authProcedure
